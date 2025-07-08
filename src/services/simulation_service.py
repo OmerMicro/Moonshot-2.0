@@ -132,10 +132,6 @@ class SimulationService:
             'velocity': capsule.velocity,
             'current': capsule.current
         }
-        
-        # Set small initial current for electromagnetic interaction
-        if abs(capsule.current) < 0.1:
-            capsule.current = 0.1  # Small initial current for testing
     
     def run(self, max_time: float = 0.01) -> SimulationResult:
         """
@@ -257,7 +253,8 @@ class SimulationService:
                 distance = max(0.001, abs(self.capsule.position - stage.properties.position))  # Minimum 1mm
                 
                 # Only calculate force if there's meaningful current
-                if abs(stage_current) > 1.0 and abs(self.capsule.current) >= 0.1:
+                # Capsule current starts at 0 and builds up through induction
+                if abs(stage_current) > 1.0 and abs(self.capsule.current) > 0.01:
                     # Calculate force using physics engine
                     force = self.physics.calculate_force(
                         stage, self.capsule, distance,

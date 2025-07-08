@@ -108,18 +108,17 @@ class TestSimulationService:
         # Position capsule between stages
         self.capsule.position = 0.1
         
-        # Ensure meaningful currents for force calculation
-        # Force calculation requires stage_current > 1.0 and capsule_current > 0.1
-        # Capsule already gets 0.1A from initialization, but let's check stage currents
-        stage_current_0 = self.stages[0].get_current(0.0001)  # Shortly after activation
-        stage_current_1 = self.stages[1].get_current(0.0011)  # Shortly after activation
-        
-        # Verify stages have meaningful current
-        assert stage_current_0 > 1.0 or stage_current_1 > 1.0, f"Stage currents too low: {stage_current_0}, {stage_current_1}"
-        
-        # Calculate force at a time when stages have current
-        # We need to simulate the passage of time for RLC discharge
+        # Set simulation time to when stages have good current
         self.service.time = 0.0001  # Set time for current calculation
+        
+        # Simulate electromagnetic induction by running a step
+        # This will induce current in the capsule naturally
+        self.service._update_capsule_current()
+        
+        # Verify that capsule now has induced current
+        assert abs(self.capsule.current) > 0.01, f"Capsule current too low: {self.capsule.current}"
+        
+        # Calculate force
         total_force = self.service._calculate_total_force()
         
         # Should have non-zero force from electromagnetic interaction
