@@ -1,4 +1,4 @@
-o i"""
+"""
 Simple plotting service for electromagnetic gun simulation.
 
 Quick implementation for basic visualization.
