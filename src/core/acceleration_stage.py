@@ -141,7 +141,58 @@ class AccelerationStage(Coil):
         # Ensure current is non-negative (simplified model)
         return max(0.0, current)
     
-    def get_stored_energy(self) -> float:
+    def get_current_derivative(self, time: float) -> float:
+        """
+        Calculate time derivative of current (dI/dt) for EMF calculations
+        
+        Args:
+            time: Current time in seconds
+            
+        Returns:
+            Current derivative in Amperes per second
+        """
+        if not self.is_active or self.activation_time is None or time < self.activation_time:
+            return 0.0
+        
+        # Time since activation
+        dt = time - self.activation_time
+        
+        # RLC circuit parameters
+        L = self.inductance
+        C = self.capacitance
+        R = self.properties.resistance
+        
+        # Calculate circuit characteristics
+        omega_0 = 1 / np.sqrt(L * C)  # Natural frequency
+        alpha = R / (2 * L)  # Damping coefficient
+        
+        # Determine circuit type and calculate current derivative
+        if alpha < omega_0:
+            # Underdamped oscillation
+            omega_d = np.sqrt(omega_0**2 - alpha**2)  # Damped frequency
+            
+            # dI/dt for underdamped RLC
+            # I(t) = (V₀/ωₐL) * e^(-αt) * sin(ωₐt)
+            # dI/dt = (V₀/ωₐL) * e^(-αt) * [ωₐ*cos(ωₐt) - α*sin(ωₐt)]
+            amplitude = self.voltage / (omega_d * L)
+            exp_term = np.exp(-alpha * dt)
+            cos_term = omega_d * np.cos(omega_d * dt)
+            sin_term = alpha * np.sin(omega_d * dt)
+            
+            derivative = amplitude * exp_term * (cos_term - sin_term)
+        elif alpha == omega_0:
+            # Critically damped
+            # I(t) = (V₀/L) * t * e^(-αt)
+            # dI/dt = (V₀/L) * e^(-αt) * (1 - αt)
+            derivative = (self.voltage / L) * np.exp(-alpha * dt) * (1 - alpha * dt)
+        else:
+            # Overdamped - minimal current change
+            derivative = 0.0
+        
+        return derivative
+    
+    @property
+    def stored_energy(self) -> float:
         """
         Calculate energy stored in the capacitor
         
@@ -149,6 +200,15 @@ class AccelerationStage(Coil):
             Stored energy in Joules (E = 0.5 * C * V²)
         """
         return 0.5 * self.capacitance * self.voltage**2
+    
+    def get_stored_energy(self) -> float:
+        """
+        Calculate energy stored in the capacitor (method version for compatibility)
+        
+        Returns:
+            Stored energy in Joules (E = 0.5 * C * V²)
+        """
+        return self.stored_energy
     
     def get_energy_transferred(self, time: float) -> float:
         """
