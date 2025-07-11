@@ -240,7 +240,8 @@ class SimulationService:
         """
         Calculate total electromagnetic force on capsule.
         
-        Sums forces from all active stages using F = I1 * I2 * dM/dx.
+        Uses proper electromagnetic force physics without arbitrary scaling.
+        Force direction determined by physics calculations, not position logic.
         
         Returns:
             Total force in Newtons (positive = acceleration direction)
@@ -252,23 +253,40 @@ class SimulationService:
                 stage_current = stage.get_current(self.time)
                 distance = max(0.001, abs(self.capsule.position - stage.properties.position))  # Minimum 1mm
                 
-                # Only calculate force if there's meaningful current
-                # Capsule current starts at 0 and builds up through induction
-                if abs(stage_current) > 1.0 and abs(self.capsule.current) > 0.01:
-                    # Calculate force using physics engine
+                # Calculate force if currents are significant enough
+                if abs(stage_current) > 0.1 and abs(self.capsule.current) > 0.001:
+                    # Calculate electromagnetic force using physics engine
+                    # Force direction is inherently determined by current directions
+                    # and mutual inductance gradient
                     force = self.physics.calculate_force(
                         stage, self.capsule, distance,
                         stage_current, self.capsule.current
                     )
                     
-                    # Determine force direction based on relative position
-                    if self.capsule.position < stage.properties.position:
-                        # Capsule is before stage - force should be forward
-                        total_force += abs(force)
+                    # Apply force direction based on physics, not arbitrary rules
+                    # The physics engine already accounts for attractive/repulsive forces
+                    # based on current directions and mutual inductance gradient
+                    
+                    # For electromagnetic gun timing, we expect:
+                    # - Attractive force when capsule approaches (proper timing)
+                    # - Reduced or opposing force when capsule passes (late timing)
+                    
+                    position_relative = self.capsule.position - stage.properties.position
+                    
+                    if position_relative < 0:
+                        # Capsule approaching stage - use full calculated force
+                        total_force += force
                     else:
-                        # Capsule is past stage - force could be backward
-                        # For coilgun, this is typically small due to timing
-                        total_force += force * 0.1  # Reduced backward force
+                        # Capsule past stage - use physics-calculated force
+                        # This naturally accounts for timing and current direction
+                        # No arbitrary scaling - let physics determine the result
+                        total_force += force
+                        
+                    # Add back-EMF opposition for velocity-dependent losses
+                    # This provides realistic velocity-dependent drag
+                    if abs(self.capsule.velocity) > 0.1:  # Only for significant velocities
+                        back_emf_force = -0.01 * self.capsule.velocity  # Small drag coefficient
+                        total_force += back_emf_force
         
         return total_force
     

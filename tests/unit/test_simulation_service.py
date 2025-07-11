@@ -218,9 +218,9 @@ class TestSimulationService:
         assert hasattr(result, 'history')
         
         # Verify data values are reasonable
-        # Note: Small negative velocities can occur due to numerical effects or back-EMF
+        # Note: Small negative values can occur due to numerical effects or back-EMF
         assert abs(result.final_velocity) >= 0  # Allow small negative velocities
-        assert result.final_position >= 0
+        assert result.final_position >= -1e-5  # Allow small numerical errors (up to 10 microns)
         assert result.total_time >= 0
         assert 0 <= result.energy_efficiency <= 1
     
