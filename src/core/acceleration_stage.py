@@ -103,6 +103,11 @@ class AccelerationStage(Coil):
         """
         Calculate current based on RLC circuit discharge
         
+        Implements proper RLC discharge physics with correct initial conditions:
+        - I(0) = 0 (capacitor starts with zero current)
+        - V(0) = V₀ (initial capacitor voltage)
+        - Proper damping behavior based on circuit parameters
+        
         Args:
             time: Current time in seconds
             
@@ -124,26 +129,52 @@ class AccelerationStage(Coil):
         omega_0 = 1 / np.sqrt(L * C)  # Natural frequency
         alpha = R / (2 * L)  # Damping coefficient
         
-        # Determine circuit type and calculate current
+        # Handle edge cases
+        if dt <= 0:
+            return 0.0
+        if L <= 0 or C <= 0:
+            return 0.0
+            
+        # Determine circuit type and calculate current with correct physics
         if alpha < omega_0:
             # Underdamped oscillation
             omega_d = np.sqrt(omega_0**2 - alpha**2)  # Damped frequency
             
-            # Current in underdamped RLC: I(t) = (V₀/ωₐL) * e^(-αt) * sin(ωₐt)
+            # Correct RLC current with proper initial conditions I(0) = 0
+            # I(t) = (V₀/ωₐL) * e^(-αt) * sin(ωₐt)
             current = (self.voltage / (omega_d * L)) * np.exp(-alpha * dt) * np.sin(omega_d * dt)
-        elif alpha == omega_0:
-            # Critically damped
+            
+        elif abs(alpha - omega_0) < 1e-6:  # Critically damped (with numerical tolerance)
+            # Critically damped: I(t) = (V₀/L) * t * e^(-αt)
             current = (self.voltage / L) * dt * np.exp(-alpha * dt)
+            
         else:
-            # Overdamped - minimal oscillation
-            current = 0.0
+            # Overdamped: I(t) = (V₀/L) * (1/(α₂-α₁)) * (e^(-α₁t) - e^(-α₂t))
+            # where α₁,₂ = α ± √(α² - ω₀²)
+            discriminant = alpha**2 - omega_0**2
+            if discriminant > 0:
+                sqrt_disc = np.sqrt(discriminant)
+                alpha1 = alpha - sqrt_disc
+                alpha2 = alpha + sqrt_disc
+                
+                if abs(alpha2 - alpha1) > 1e-12:  # Avoid division by zero
+                    current = (self.voltage / L) * (1 / (alpha2 - alpha1)) * (
+                        np.exp(-alpha1 * dt) - np.exp(-alpha2 * dt)
+                    )
+                else:
+                    current = 0.0
+            else:
+                current = 0.0
         
-        # Ensure current is non-negative (simplified model)
+        # Current should naturally be non-negative for first half-cycle
+        # After that, it can go negative but we'll limit for physical realism
         return max(0.0, current)
     
     def get_current_derivative(self, time: float) -> float:
         """
         Calculate time derivative of current (dI/dt) for EMF calculations
+        
+        Uses analytical derivatives of the corrected RLC current equations
         
         Args:
             time: Current time in seconds
@@ -166,7 +197,13 @@ class AccelerationStage(Coil):
         omega_0 = 1 / np.sqrt(L * C)  # Natural frequency
         alpha = R / (2 * L)  # Damping coefficient
         
-        # Determine circuit type and calculate current derivative
+        # Handle edge cases
+        if dt <= 0:
+            return self.voltage / L  # Initial derivative at t=0
+        if L <= 0 or C <= 0:
+            return 0.0
+            
+        # Calculate derivative based on circuit type
         if alpha < omega_0:
             # Underdamped oscillation
             omega_d = np.sqrt(omega_0**2 - alpha**2)  # Damped frequency
@@ -180,14 +217,29 @@ class AccelerationStage(Coil):
             sin_term = alpha * np.sin(omega_d * dt)
             
             derivative = amplitude * exp_term * (cos_term - sin_term)
-        elif alpha == omega_0:
-            # Critically damped
-            # I(t) = (V₀/L) * t * e^(-αt)
+            
+        elif abs(alpha - omega_0) < 1e-6:  # Critically damped
+            # Critically damped: I(t) = (V₀/L) * t * e^(-αt)
             # dI/dt = (V₀/L) * e^(-αt) * (1 - αt)
             derivative = (self.voltage / L) * np.exp(-alpha * dt) * (1 - alpha * dt)
+            
         else:
-            # Overdamped - minimal current change
-            derivative = 0.0
+            # Overdamped: I(t) = (V₀/L) * (1/(α₂-α₁)) * (e^(-α₁t) - e^(-α₂t))
+            # dI/dt = (V₀/L) * (1/(α₂-α₁)) * (-α₁*e^(-α₁t) + α₂*e^(-α₂t))
+            discriminant = alpha**2 - omega_0**2
+            if discriminant > 0:
+                sqrt_disc = np.sqrt(discriminant)
+                alpha1 = alpha - sqrt_disc
+                alpha2 = alpha + sqrt_disc
+                
+                if abs(alpha2 - alpha1) > 1e-12:  # Avoid division by zero
+                    derivative = (self.voltage / L) * (1 / (alpha2 - alpha1)) * (
+                        -alpha1 * np.exp(-alpha1 * dt) + alpha2 * np.exp(-alpha2 * dt)
+                    )
+                else:
+                    derivative = 0.0
+            else:
+                derivative = 0.0
         
         return derivative
     
