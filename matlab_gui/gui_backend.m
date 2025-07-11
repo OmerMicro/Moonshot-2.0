@@ -1,11 +1,11 @@
-function result = run_emgun_simulation(voltage, num_stages)
-% RUN_EMGUN_SIMULATION Backend helper for running electromagnetic gun simulation
+function result = gui_backend(voltage, num_stages)
+% GUI_BACKEND Backend helper for running electromagnetic gun simulation
 %
 % This function provides a clean interface to the emgun.m backend
 % with proper error handling and path management.
 %
 % Usage:
-%   result = run_emgun_simulation(voltage, num_stages)
+%   result = gui_backend(voltage, num_stages)
 %
 % Input:
 %   voltage    - Voltage per stage in Volts (100-1000)

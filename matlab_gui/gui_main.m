@@ -1,11 +1,11 @@
-function emgun_gui_main()
-% EMGUN_GUI_MAIN Main Electromagnetic Gun Simulation GUI
+function gui_main()
+% GUI_MAIN Main Electromagnetic Gun Simulation GUI
 %
 % Simple, modular GUI for controlling electromagnetic gun simulation
 % parameters and visualizing results.
 %
 % Usage:
-%   emgun_gui_main()  % Launch the GUI
+%   gui_main()  % Launch the GUI
 
     % Create main figure
     fig = figure('Name', 'Electromagnetic Gun Simulation', ...
@@ -230,7 +230,7 @@ function run_simulation_callback(src, ~)
         fprintf('Running simulation: %.0fV, %d stages...\n', voltage, num_stages);
         
         % Run simulation using backend helper
-        result = run_emgun_simulation(voltage, num_stages);
+        result = gui_backend(voltage, num_stages);
         
         % Store result
         gui_data.last_result = result;
@@ -285,7 +285,7 @@ function show_plots_callback(src, ~)
     end
     
     % Create plots using separate plotting function
-    create_emgun_plots(gui_data.last_result, gui_data.last_voltage, gui_data.last_stages);
+    gui_plots(gui_data.last_result, gui_data.last_voltage, gui_data.last_stages);
 end
 
 function update_results_display(gui_data, result)

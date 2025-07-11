@@ -1,5 +1,5 @@
-function create_emgun_plots(result, voltage, num_stages)
-% CREATE_EMGUN_PLOTS Create plots matching Python simulation layout
+function gui_plots(result, voltage, num_stages)
+% GUI_PLOTS Create plots matching Python simulation layout
 %
 % Creates a 2x2 subplot figure showing the same plots as the Python
 % simulation: Position, Velocity, Force, and Energy vs Time.

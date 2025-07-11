@@ -96,7 +96,7 @@ function launch_gui()
     
     try
         % Verify GUI components exist
-        required_functions = {'emgun_gui_main', 'run_emgun_simulation', 'create_emgun_plots'};
+        required_functions = {'gui_main', 'gui_backend', 'gui_plots'};
         
         for i = 1:length(required_functions)
             if exist(required_functions{i}, 'file') ~= 2
@@ -105,7 +105,7 @@ function launch_gui()
         end
         
         % Start the main GUI
-        emgun_gui_main();
+        gui_main();
         
         fprintf('✓ GUI launched successfully!\n');
         
@@ -130,7 +130,7 @@ function display_instructions()
     fprintf('• Stages: 6 acceleration stages\n');
     fprintf('• Mass: 1.0 kg (fixed)\n');
     fprintf('• Tube: 0.5 m (fixed)\n');
-    fprintf('• Time: 0.01 s (fixed)\n');
+    fprintf('• Time: 5.0 s (fixed)\n');
     fprintf('\nExpected Result: ~0.008 m/s final velocity\n');
     fprintf('\nPlot Layout (matches Python simulation):\n');
     fprintf('• Top-left: Position vs Time (mm vs ms)\n');
