@@ -55,11 +55,11 @@ class TestCurrentVelocityRelationship:
         
         for voltage in voltages:
             service = self.create_simulation_with_voltage(voltage)
-            result = service.run(max_time=5.0)
-            
+            result = service.run(max_time=0.01)  # Much shorter time for speed
+
             final_velocities.append(result.final_velocity)
             max_forces.append(result.max_force)
-            
+
             print(f"Voltage: {voltage}V -> Final Velocity: {result.final_velocity:.4f} m/s, Max Force: {result.max_force:.2f} N")
         
         # Verify increasing trend

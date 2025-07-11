@@ -164,8 +164,8 @@ class PhysicsEngine:
         capsule.update_position(new_position)
         capsule.update_velocity(new_velocity)
     
-    def calculate_energy_transfer(self, coil1: 'Coil', coil2: 'Coil',
-                                 current1: float, current2: float,
+    def calculate_energy_transfer(self, coil1: 'Coil', coil2: 'Coil', 
+                                 current1: float, current2: float, 
                                  current1_rate: float, current2_rate: float,
                                  time_step: float) -> float:
         """
