@@ -13,7 +13,7 @@ This project simulates a **1kg tubular capsule** (83mm diameter) accelerated thr
 - ✅ **MATLAB Integration**: GUI interface and visualization tools
 - ✅ **Comprehensive Testing**: 42 unit tests + integration tests (100% Python core)
 - ✅ **Multiple Interfaces**: Command line, Python API, and MATLAB GUI
-- ✅ **Real-time Visualization**: Plots for velocity, force, position, and energy
+- ✅ **Visualization**: Plots for velocity, force, position, and energy
 
 ## 🚀 Quick Start
 
@@ -90,7 +90,7 @@ electromagnetic-gun-simulation/
 │   ├── cli/                       # Command line interface
 │   └── visualization/             # Plotting utilities
 ├── tests/                         # Test suite (42 unit + integration)
-├── matlab_gui/                    # MATLAB GUI implementation
+├── matlab_gui/                    # MATLAB GUI (4 essential files)
 ├── matlab_simple/                 # Simple MATLAB interface
 ├── matlab_wrappers/              # Python-MATLAB bridge functions
 ├── run_simulation.bat            # Main Python launcher
@@ -109,9 +109,29 @@ electromagnetic-gun-simulation/
 
 ### MATLAB Files
 - `run_gui.m` - Main GUI launcher (recommended entry point)
+- `matlab_gui/gui_main.m` - Main GUI interface with parameter controls
+- `matlab_gui/gui_backend.m` - Simulation backend connector
+- `matlab_gui/gui_plots.m` - Professional visualization (2x2 plots)
+- `matlab_gui/gui_validation.m` - Parameter validation utilities
 - `matlab_simple/emgun.m` - Simple command-line interface
-- `matlab_wrappers/emgun_simulate.m` - Full parameter control
-- `matlab_wrappers/emgun_quick.m` - Quick simulation interface
+- `matlab_wrappers/emgun_simulate.m` - Full parameter control (Python bridge)
+- `matlab_wrappers/emgun_quick.m` - Quick simulation interface (Python bridge)
+
+### Clean MATLAB Architecture
+```
+📁 matlab_gui/ (Optimized - 4 essential files)
+├── gui_main.m          # 🖥️ Main GUI interface
+├── gui_backend.m       # ⚙️ Simulation connector
+├── gui_plots.m         # 📊 Professional plotting
+└── gui_validation.m    # ✅ Parameter validation
+
+📁 matlab_simple/
+└── emgun.m            # 🔧 Core simulation engine
+
+📁 matlab_wrappers/ (Python Integration)
+├── emgun_simulate.m   # 🔗 Full parameter control
+└── emgun_quick.m      # ⚡ Quick interface
+```
 
 ### Usage Examples
 ```matlab
