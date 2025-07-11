@@ -8,9 +8,6 @@ A complete 1D electromagnetic gun simulation implementing a tubular capsule acce
 - **Task Specification**: [`SW Engineer_ Tube-Capsule Model OOP and MATLAB.pdf`](SW%20Engineer_%20Tube-Capsule%20Model%20OOP%20and%20MATLAB.pdf) - Original project requirements and specifications
 - **Design Document**: [`Moonshot.docx`](Moonshot.docx) - **Author's original design and implementation approach** (human-authored, not AI-generated)
 
-### Technical Specification
-- **Implementation Details**: [`Tube-Capsule Model in OOP and.md`](Tube-Capsule%20Model%20in%20OOP%20and.md) - Complete technical specification
-
 ## 🎯 Project Overview
 
 This project simulates a **1kg tubular capsule** (83mm diameter) accelerated through **6 discrete electromagnetic stages** in a **0.5m acceleration tube**. The simulation uses realistic physics calculations including mutual inductance, RLC circuits, and electromagnetic force modeling.
