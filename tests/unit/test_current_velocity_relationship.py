@@ -55,7 +55,7 @@ class TestCurrentVelocityRelationship:
         
         for voltage in voltages:
             service = self.create_simulation_with_voltage(voltage)
-            result = service.run(max_time=0.01)
+            result = service.run(max_time=5.0)
             
             final_velocities.append(result.final_velocity)
             max_forces.append(result.max_force)
