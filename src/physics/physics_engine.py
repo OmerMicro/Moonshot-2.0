@@ -164,32 +164,48 @@ class PhysicsEngine:
         capsule.update_position(new_position)
         capsule.update_velocity(new_velocity)
     
-    def calculate_energy_transfer(self, coil1: 'Coil', coil2: 'Coil', 
-                                 current1: float, current2: float, time_step: float) -> float:
+    def calculate_energy_transfer(self, coil1: 'Coil', coil2: 'Coil',
+                                 current1: float, current2: float,
+                                 current1_rate: float, current2_rate: float,
+                                 time_step: float) -> float:
         """
         Calculate energy transfer between coils due to mutual inductance
+        
+        Uses proper electromagnetic energy transfer physics:
+        P = I₁ * (M * dI₂/dt) + I₂ * (M * dI₁/dt)
+        Energy = P * dt
         
         Args:
             coil1: First coil
             coil2: Second coil
-            current1: Current in first coil
-            current2: Current in second coil
-            time_step: Time step for calculation
+            current1: Current in first coil (A)
+            current2: Current in second coil (A)
+            current1_rate: Time derivative of current1 (A/s)
+            current2_rate: Time derivative of current2 (A/s)
+            time_step: Time step for calculation (s)
             
         Returns:
             Energy transfer in Joules
         """
-        # Energy transfer due to mutual inductance coupling
-        # Simplified calculation: P = I₁ * I₂ * M * dI/dt
-        # For this simulation, we'll use a simplified approach
+        if abs(current1) < 1e-6 and abs(current2) < 1e-6:
+            return 0.0
+            
+        # Calculate mutual inductance between coils
+        distance = abs(coil1.properties.position - coil2.properties.position)
+        mutual_inductance = self.calculate_mutual_inductance(coil1, coil2, distance)
         
-        mutual_inductance = self.calculate_mutual_inductance(coil1, coil2, 
-                                                           abs(coil1.properties.position - coil2.properties.position))
+        # Power transfer due to mutual inductance coupling
+        # P = I₁ * (M * dI₂/dt) + I₂ * (M * dI₁/dt)
+        # This represents the power exchanged due to changing magnetic flux
+        power_12 = current1 * mutual_inductance * current2_rate  # Power from coil2 affecting coil1
+        power_21 = current2 * mutual_inductance * current1_rate  # Power from coil1 affecting coil2
         
-        # Simplified energy calculation
-        energy_transfer = mutual_inductance * current1 * current2 * time_step
+        total_power = power_12 + power_21
         
-        return abs(energy_transfer)
+        # Energy transfer over time step
+        energy_transfer = abs(total_power * time_step)
+        
+        return energy_transfer
     
     def validate_physics_constants(self) -> bool:
         """
