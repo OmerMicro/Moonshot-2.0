@@ -29,7 +29,7 @@ def run_simulation_from_params(
     stage_turns: int = 100,
     stage_diameter: float = 0.09,
     stage_length: float = 0.05,
-    max_time: float = 0.01,
+    max_time: float = 5.0,
     time_step: float = 1e-5,
     output_file: Optional[str] = None
 ) -> Dict[str, Any]:
@@ -161,8 +161,8 @@ Examples:
                         help='Stage capacitance in F (default: 1000e-6)')
     
     # Simulation parameters
-    parser.add_argument('--max-time', type=float, default=0.01,
-                        help='Max simulation time in s (default: 0.01)')
+    parser.add_argument('--max-time', type=float, default=5.0,
+                        help='Max simulation time in s (default: 5.0)')
     parser.add_argument('--time-step', type=float, default=1e-5,
                         help='Time step in s (default: 1e-5)')
     

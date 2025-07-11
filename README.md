@@ -31,7 +31,7 @@ python -m pytest tests/ -v
 
 #### Python Command Line
 ```bash
-# Quick simulation (10ms)
+# Quick simulation (5s)
 run_simulation.bat
 
 # Custom simulation with plotting
@@ -58,7 +58,7 @@ python -m src.cli.main --help
 
 | Parameter | Description | Default | Range |
 |-----------|-------------|---------|-------|
-| `--max-time` | Simulation duration (seconds) | 0.01 | 0.001 - 0.1 |
+| `--max-time` | Simulation duration (seconds) | 5.0 | 0.001 - 10.0 |
 | `--tube-length` | Gun tube length (meters) | 0.5 | 0.3 - 2.0 |
 | `--capsule-mass` | Projectile mass (kg) | 1.0 | 0.5 - 5.0 |
 | `--time-step` | Integration step (seconds) | 1e-5 | 1e-6 - 1e-4 |
@@ -144,7 +144,7 @@ test_matlab_simple
 ```
 
 ### Expected Results
-- **Final Velocity**: ~0.008 m/s (400V, 6 stages, 10ms simulation)
+- **Final Velocity**: ~0.008 m/s (400V, 6 stages, 5s simulation)
 - **Energy Efficiency**: ~0.1% (capacitor energy → kinetic energy)
 - **Force Range**: 0.01 - 0.05 N peak electromagnetic forces
 
@@ -184,7 +184,7 @@ ELECTROMAGNETIC GUN SIMULATION RESULTS
 ==================================================
 Final Velocity:    0.0081 m/s
 Final Position:    0.4 mm
-Total Time:        10.00 ms
+Total Time:        5000.00 ms
 Max Force:         0.018 N
 Initial Energy:    480.0 J
 Final KE:          0.033 J

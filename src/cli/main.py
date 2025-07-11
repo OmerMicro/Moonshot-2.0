@@ -146,8 +146,8 @@ Examples:
     )
     
     # Simulation parameters
-    parser.add_argument('--max-time', type=float, default=0.01,
-                        help='Maximum simulation time in seconds (default: 0.01)')
+    parser.add_argument('--max-time', type=float, default=5.0,
+                        help='Maximum simulation time in seconds (default: 5.0)')
     parser.add_argument('--tube-length', type=float, 
                         help='Tube length in meters (default: 0.5)')
     parser.add_argument('--time-step', type=float,
