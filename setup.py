@@ -7,9 +7,9 @@ from setuptools import setup, find_packages
 import os
 
 # Read README for long description
-def read_readme():
-    with open("README_QUICK_START.md", "r", encoding="utf-8") as f:
-        return f.read()
+# def read_readme():
+#     with open("README_QUICK_START.md", "r", encoding="utf-8") as f:
+#         return f.read()
 
 # Read requirements
 def read_requirements():
@@ -21,7 +21,7 @@ setup(
     version="1.0.0",
     author="Moonshot AI Team",
     description="Electromagnetic gun simulation with MATLAB integration",
-    long_description=read_readme(),
+    # long_description=read_readme(),
     long_description_content_type="text/markdown",
     
     packages=find_packages(),

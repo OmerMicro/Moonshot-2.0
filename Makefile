@@ -121,7 +121,7 @@ run-quick:
 # Run simulation with plotting
 run-plot:
 	@echo "Running simulation with visualization..."
-	$(PYTHON) -m $(SRC_DIR).cli.main --max-time 0.01 --plot
+	$(PYTHON) -m $(SRC_DIR).cli.main --max-time 5.0 --plot
 
 # Launch MATLAB GUI
 run-matlab:

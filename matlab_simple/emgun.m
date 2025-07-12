@@ -22,15 +22,13 @@ function result = emgun(voltage, stages)
     cd(project_root);
     
     try
-        % Try standalone executable first
-        exe_path = fullfile(project_root, 'dist', 'emgun_simulator.exe');
-        if exist(exe_path, 'file')
-            cmd = sprintf('"%s" --voltage %g --num-stages %d --json-only', exe_path, voltage, stages);
+        venv_python = fullfile(project_root, 'venv', 'Scripts', 'python.exe');
+        if exist(venv_python, 'file')
+            cmd = sprintf('"%s" -m src.matlab.matlab_runner --voltage %g --num-stages %d --json-only', venv_python, voltage, stages);
         else
-            % Fall back to Python module
             cmd = sprintf('python -m src.matlab.matlab_runner --voltage %g --num-stages %d --json-only', voltage, stages);
         end
-        
+
         % Run simulation
         [status, json_output] = system(cmd);
         
