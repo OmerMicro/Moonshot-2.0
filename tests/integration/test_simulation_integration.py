@@ -218,8 +218,9 @@ class TestSimulationIntegration:
         
         # Force should scale with current squared (F ∝ I₁ * I₂)
         # Since we're using same current for both: F ∝ I²
-        assert forces[1] > forces[0]  # 10A > 1A
-        assert forces[2] > forces[1]  # 100A > 10A
+        # Note: Forces may be negative due to mutual inductance gradient direction
+        assert abs(forces[1]) > abs(forces[0])  # 10A > 1A (magnitude)
+        assert abs(forces[2]) > abs(forces[1])  # 100A > 10A (magnitude)
         
         # Check approximate quadratic scaling
         ratio_1 = forces[1] / forces[0] if forces[0] != 0 else 0

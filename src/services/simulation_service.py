@@ -284,8 +284,8 @@ class SimulationService:
                         
                     # Add back-EMF opposition for velocity-dependent losses
                     # This provides realistic velocity-dependent drag
-                    if abs(self.capsule.velocity) > 0.1:  # Only for significant velocities
-                        back_emf_force = -0.01 * self.capsule.velocity  # Small drag coefficient
+                    if abs(self.capsule.velocity) > 0.01:  # Only for significant velocities (1 cm/s)
+                        back_emf_force = -0.001 * self.capsule.velocity  # Much smaller drag coefficient
                         total_force += back_emf_force
         
         return total_force

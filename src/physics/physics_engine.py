@@ -135,7 +135,9 @@ class PhysicsEngine:
         
         # Calculate force: F = I₁ * I₂ * dM/dx
         # This formula is inherently symmetric in I₁ and I₂
-        force = current1 * current2 * dm_dx
+        # For electromagnetic gun, force should be attractive (negative gradient)
+        # Invert sign to ensure proper force direction
+        force = -current1 * current2 * dm_dx
         
         return force
     
