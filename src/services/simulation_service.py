@@ -254,7 +254,7 @@ class SimulationService:
                 distance = max(0.001, abs(self.capsule.position - stage.properties.position))  # Minimum 1mm
                 
                 # Calculate force if currents are significant enough
-                if abs(stage_current) > 0.1 and abs(self.capsule.current) > 0.001:
+                if abs(stage_current) > 1e-4 and abs(self.capsule.current) > 1e-6:
                     # Calculate electromagnetic force using physics engine
                     # Force direction is inherently determined by current directions
                     # and mutual inductance gradient

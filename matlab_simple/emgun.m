@@ -1,13 +1,14 @@
-function result = emgun(voltage, stages)
+function result = emgun(voltage, stages, max_time)
 % EMGUN Simple electromagnetic gun simulation for MATLAB
 %
-% Usage: result = emgun(voltage, stages)
-%   voltage - Voltage per stage in Volts (e.g., 400)
-%   stages  - Number of stages (e.g., 6)
+% Usage: result = emgun(voltage, stages, max_time)
+%   voltage  - Voltage per stage in Volts (e.g., 400)
+%   stages   - Number of stages (e.g., 6)
+%   max_time - Maximum simulation time in seconds
 %
 % Returns: result.velocity - Final velocity in m/s
 %
-% Example: result = emgun(400, 6);
+% Example: result = emgun(400, 6, 0.05);
 
     if nargin < 2
         voltage = 400;
@@ -24,9 +25,9 @@ function result = emgun(voltage, stages)
     try
         venv_python = fullfile(project_root, 'venv', 'Scripts', 'python.exe');
         if exist(venv_python, 'file')
-            cmd = sprintf('"%s" -m src.matlab.matlab_runner --voltage %g --num-stages %d --json-only', venv_python, voltage, stages);
+            cmd = sprintf('"%s" -m src.matlab.matlab_runner --voltage %g --num-stages %d --max-time %g --json-only', venv_python, voltage, stages, max_time);
         else
-            cmd = sprintf('python -m src.matlab.matlab_runner --voltage %g --num-stages %d --json-only', voltage, stages);
+            cmd = sprintf('python -m src.matlab.matlab_runner --voltage %g --num-stages %d --max-time %g --json-only', voltage, stages, max_time);
         end
 
         % Run simulation

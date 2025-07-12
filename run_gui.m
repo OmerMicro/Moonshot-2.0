@@ -77,7 +77,7 @@ function verify_backend()
     % Quick backend test
     try
         fprintf('Testing backend connection...\n');
-        test_result = emgun(400, 6);
+        test_result = emgun(400, 6, 0.02);
         
         if isstruct(test_result) && isfield(test_result, 'velocity') && isfinite(test_result.velocity)
             fprintf('✓ Backend test successful: %.6f m/s\n', test_result.velocity);

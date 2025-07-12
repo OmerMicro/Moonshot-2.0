@@ -77,7 +77,7 @@ class Capsule(Coil):
         current_path = np.pi * diameter  # Circumference
         
         # Effective area for current flow (wall thickness approximation)
-        wall_thickness = 0.001  # 1mm wall thickness assumption
+        wall_thickness = 0.01  # 1cm wall thickness for more realistic induced current
         effective_area = np.pi * diameter * wall_thickness
         
         resistance = rho_aluminum * current_path / effective_area

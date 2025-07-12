@@ -124,6 +124,11 @@ class TestSimulationService:
         # Should have non-zero force from electromagnetic interaction
         assert total_force != 0.0
         assert isinstance(total_force, float)
+
+    def test_simulation_max_force_nonzero(self):
+        """Test: Simulation max force should be greater than zero for typical parameters."""
+        result = self.service.run(max_time=0.01)
+        assert result.max_force > 0.0, f"Expected max force > 0, got {result.max_force}"
     
     def test_simulation_termination_conditions(self):
         """Test 5: Simulation terminates on time or position limits."""

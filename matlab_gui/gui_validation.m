@@ -29,7 +29,7 @@ function [is_valid, error_msg] = validate_parameters(params)
     
     % Define parameter limits
     limits = struct();
-    limits.voltage = [100, 1000];      % Volts
+    limits.voltage = [-1000, 10000];      % Volts
     limits.num_stages = [3, 12];       % Integer stages
     limits.mass = [0.5, 5.0];          % kg
     limits.tube_length = [0.3, 2.0];   % meters
@@ -172,7 +172,7 @@ function print_parameter_limits()
     % Helper function to display parameter limits
     fprintf('\nElectromagnetic Gun Simulation Parameter Limits:\n');
     fprintf('===============================================\n');
-    fprintf('Voltage per Stage: 100 - 1000 V\n');
+    fprintf('Voltage per Stage: -1000 - 1000 V\n');
     fprintf('Number of Stages:  3 - 12\n');
     fprintf('Capsule Mass:      0.5 - 5.0 kg\n');
     fprintf('Tube Length:       0.3 - 2.0 m\n');

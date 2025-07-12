@@ -136,7 +136,7 @@ def run_default_simulation(output_file: Optional[str] = None) -> Dict[str, Any]:
 def main():
     """Command line interface for MATLAB runner."""
     parser = argparse.ArgumentParser(
-        description="MATLAB-callable electromagnetic gun simulation",
+    description="MATLAB-callable electromagnetic gun simulation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

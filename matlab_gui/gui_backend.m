@@ -1,15 +1,16 @@
-function result = gui_backend(voltage, num_stages)
+function result = gui_backend(voltage, num_stages, max_time)
 % GUI_BACKEND Backend helper for running electromagnetic gun simulation
 %
 % This function provides a clean interface to the emgun.m backend
 % with proper error handling and path management.
 %
 % Usage:
-%   result = gui_backend(voltage, num_stages)
+%   result = gui_backend(voltage, num_stages, max_time)
 %
 % Input:
 %   voltage    - Voltage per stage in Volts (100-1000)
 %   num_stages - Number of acceleration stages (3-12)
+%   max_time   - Maximum simulation time in seconds
 %
 % Output:
 %   result - Structure with simulation results:
@@ -19,12 +20,12 @@ function result = gui_backend(voltage, num_stages)
 %     .efficiency - Energy efficiency (0-1)
 
     % Input validation
-    if nargin < 2
-        error('Both voltage and num_stages are required');
+    if nargin < 3
+        error('voltage, num_stages, and max_time are required');
     end
     
-    if ~isnumeric(voltage) || voltage < 100 || voltage > 1000
-        error('Voltage must be between 100 and 1000 V');
+    if ~isnumeric(voltage) || voltage < -10000 || voltage > 10000
+        error('Voltage must be between -10000 and 10000 V');
     end
     
     if ~isnumeric(num_stages) || num_stages < 3 || num_stages > 12 || mod(num_stages, 1) ~= 0
@@ -48,7 +49,7 @@ function result = gui_backend(voltage, num_stages)
     
     % Run the simulation
     try
-        result = emgun(voltage, num_stages);
+        result = emgun(voltage, num_stages, max_time);
         
         % Validate result structure
         if ~isstruct(result)
